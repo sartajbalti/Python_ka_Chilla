@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ANOVA_MANOVA_ANCOVA_MANCOVA.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="statistical-methods-anova-ancova-mancova-and-mancova"><strong>Statistical Methods ANOVA, ANCOVA, MANCOVA and MANCOVA</strong></h1>
+<h2 id="anova"><strong>ANOVA</strong></h2>
+<blockquote>
+<p>ANOVA is a Statistical technique for examining the difference among means for three or more populations.We can also say Analysis of varience is ANOVA, used to determined whether or not there is a statistically significant difference between  the means of three or more independent groups. The most common types of ANOVAs are the one way and two way ANOVA.</p>
+<ul>
+<li>
+<ol>
+<li>
+<p>One way ANOVA:</p>
+<pre><code>         Used to check how is the impact considering one factor. Desi Example: agr 2 plants ko fertilizer ko factor rakh k donun k fruit quality  ko dekhain to ya hoga one way ANOVA. Q k is me hm sirf ek fator ko consider kr rhy hain.
+</code></pre>
+</li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>nechy flowchart as an example given hai.</p>
+</blockquote>
+<pre><code class="language-mermaid"><div class="mermaid">    graph LR;
+        C[Fertilizer] -->|ONE FACTOR|D[Fruit Quality]
+       
+</div></code></pre>
+<blockquote>
+<ul>
+<li>
+<ol start="2">
+<li>
+<p>Two way ANOVA:</p>
+<pre><code>         Used to check how is the impact considering two factor. Same uper Waly example me hum agr unhi plants k height growth or sath me quality of fruits b consider krain to ya hojya ga two way ANOVA q k is me hm 2 fators ko as a consideration lay rhy hain. 
+</code></pre>
+</li>
+</ol>
+</li>
+</ul>
+<blockquote></blockquote>
+<p>nechy flowchart as an example given hai.</p>
+</blockquote>
+<pre><code class="language-mermaid"><div class="mermaid">    graph LR;
+        D[Fertilizer] -->|TWO FACTOR|C[Fruit Quality]
+        E[Amount of water] -->|TWO FACTOR| C
+</div></code></pre>
+<blockquote></blockquote>
+<h2 id="ancova"><strong>ANCOVA</strong></h2>
+<blockquote>
+<p>In short analysis of covariance is also used to determine whether or not there is a statistically significant differnce between the means of three or more independent groups/samples. The Difference is an ANCOVA includes one or more covariates, which help us to better understand how a factor impacts a response variable after accounting for some covariates.</p>
+<blockquote></blockquote>
+<p>nechy flowchart as an example given hai.</p>
+</blockquote>
+<pre><code class="language-mermaid"><div class="mermaid">    graph LR;
+        D[Stuyding Technique] -->|ONE FACTOR|C[Exam Score]
+        E[Current Grade] -->|Covariates| C
+</div></code></pre>
+<h2 id="manova"><strong>MANOVA</strong></h2>
+<blockquote>
+<p>Inshort hm isy Multivariate analysis of variance b keh skty hain, ya ANOVA k identical hota hai magr i amw two y more responses ko dekhty hain one factor two response. Ya b one way and two way hota hai same ANOVA k trah.</p>
+<ul>
+<li>
+<ol>
+<li>
+<p>One way MANOVA:</p>
+<pre><code>         Used to check how is the impact considering one factor and two response of variable. Desi Example: agr 2 plants ko fertilizer ko factor rakh k donun k fruit quality or height ko dekhain to ya hoga one way ANOVA. Q k is me hm sirf ek fator ko consider kr rhy hain.
+</code></pre>
+</li>
+</ol>
+</li>
+</ul>
+<blockquote></blockquote>
+<p>nechy flowchart as an example given hai.</p>
+</blockquote>
+<pre><code class="language-mermaid"><div class="mermaid">    graph LR;
+        A[Fertilizer] -->|ONE FACTOR|B[Fruit Quality]
+        A --> |ONE FACTOR|C[Plant Height]
+</div></code></pre>
+<blockquote>
+<p>-2. Two way MANOVA:</p>
+<pre><code>              Is me two factor and two response of variables ko dekahin gay, like agr 2 plants ko fertilizer and water quantity ko factor rakh k donun k fruit quality or height ko dekhain to ya hoga one way ANOVA. Q k is me hm sirf ek fator ko consider kr rhy hain. 
+</code></pre>
+<p>nechy flowchart as an example given hai.</p>
+</blockquote>
+<pre><code class="language-mermaid"><div class="mermaid">    graph LR;
+        A[Fertilizer] -->|TWO FACTOR|B[Fruit Quality]
+        A --> |TWO FACTOR|C[Plant Height]
+        D[Amount of water] -->|TWO FACTOR| B
+        D --> |TWO FACTOR|C
+</div></code></pre>
+<h2 id="mancova"><strong>MANCOVA</strong></h2>
+<blockquote>
+<p>Is also known as Multivariate Analysis of covariance. is identical to a MANOVA, except it also includes one or more covariates. Similar to a MANOVA, a MANCOVA can also be one-way or two-way.</p>
+<ul>
+<li>
+<ol>
+<li>
+<p>One way MANCOVA:</p>
+<pre><code>             Is me one factor with covariance and two response of variables ko dekahin gay, like agr 2 plants ko fertilizer  ko factor weather ko as a covarient rakh k donun k fruit quality or height ko dekhain to ya hoga one way MANCOVA. Q k is me hm sirf ek factor ko consider kr rhy hain. 
+</code></pre>
+</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<blockquote></blockquote>
+</blockquote>
+<p>nechy flowchart as an example given hai.</p>
+</blockquote>
+<pre><code class="language-mermaid"><div class="mermaid">    graph LR;
+        A[Fertilizer] -->|ONE FACTOR|B[Fruit Quality]
+        A --> |ONE FACTOR|C[Plant Height]
+        D[Weather] -->|Covariates| B
+        D -->|Covariates| C
+</div></code></pre>
+<blockquote>
+<ul>
+<li>
+<ol>
+<li>
+<p>Two way MANCOVA:</p>
+<pre><code>             Is me two factor with covariance and two response of variables ko dekahin gay, like agr 2 plants ko fertilizer and water quantity ko factor rakh k donun k fruit quality or height ko dekhain to ya hoga one way ANOVA. Q k is me hm sirf ek fator ko consider kr rhy hain. 
+</code></pre>
+</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<blockquote></blockquote>
+</blockquote>
+<p>nechy flowchart as an example given hai.</p>
+</blockquote>
+<pre><code class="language-mermaid"><div class="mermaid">    graph LR;
+        A[Fertilizer] -->|TWO FACTOR|B[Fruit Quality]
+        A --> |TWO FACTOR|C[Plant Height]
+        D[Amount of water] -->|TWO FACTOR|B
+        D --> |TWO FACTOR|C
+         E[Weather] -->|Covariates| B
+        E -->|Covariates| C
+</div></code></pre>
+
+</body>
+</html>
